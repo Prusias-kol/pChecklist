@@ -1,14 +1,45 @@
-void testFunc();
-void main();
+void generateNewFile(string target, int firstId, int lastId);
+void generateNewFileCustomList(string target, int[] customList);
+int totalItemAmount(item x);
+void verfiyChecklist(string target);
+void printHelp();
+void main(string arg);
 
 record listOfItems {
     int first;
     int last;
+    int[] list;
 };
+
+void main(string arg) {
+    string [int] commands = arg.split_string("\\s+");
+    for(int i = 0; i < commands.count(); ++i){
+        switch(commands[i]) {
+            case "help":
+                printHelp();
+                return;
+            //easy adding new item checklists if you don't know how to format the file
+            case "generateCustomList":
+                print("Supports custom targetLists");
+                print("Read the code to understand how to make your own checklists");
+                // TO ADD A CUSTOM LIST OF ITEM IDS, uncomment below
+                // Replace targetName with your new target name (no spaces) and {1,2,3} with your list of item ids
+                // int[] temp = {1,2,3};
+                // generateNewFileCustomList("targetName", temp);
+                // TO ADD A CONSECUTIVE LIST OF ITEM IDS
+                // Replace targetName with your new target name (no spaces) and firstId and lastId with integers for item ids
+                // generateNewFile("targetName", firstId, lastId);
+                return;
+            default:
+                verfiyChecklist(commands[i]);
+                return;
+        }
+    }
+}
 
 void generateNewFile(string target, int firstId, int lastId) {
     listOfItems [string] itemList;
-    file_to_map("data/checklistData.txt", itemList);
+    file_to_map("data/personalChecklistData.txt", itemList);
     if ((itemList contains target)) {
         print("Target checklist already exists!", "red");
         return;
@@ -16,8 +47,26 @@ void generateNewFile(string target, int firstId, int lastId) {
     listOfItems temp;
     temp.first = firstId;
     temp.last = lastId;
+    temp.list = {};
     itemList[target] = temp;
-    if (map_to_file(itemList, "data/checklistData.txt"))
+    if (map_to_file(itemList, "data/personalChecklistData.txt"))
+        print("File saved successfully.");
+    else
+        print("Error, file was not saved.");
+}
+void generateNewFileCustomList(string target, int[] customList) {
+    listOfItems [string] itemList;
+    file_to_map("data/personalChecklistData.txt", itemList);
+    if ((itemList contains target)) {
+        print("Target checklist already exists!", "red");
+        return;
+    }
+    listOfItems temp;
+    temp.first = -1;
+    temp.last = -1;
+    temp.list = customList;
+    itemList[target] = temp;
+    if (map_to_file(itemList, "data/personalChecklistData.txt"))
         print("File saved successfully.");
     else
         print("Error, file was not saved.");
@@ -30,46 +79,72 @@ int totalItemAmount(item x) {
 void verfiyChecklist(string target) {
     listOfItems [string] itemList;
     file_to_map("data/checklistData.txt", itemList);
-    if (!(itemList contains target)) {
+    listOfItems [string] customList;
+    file_to_map("data/personalChecklistData.txt", customList);
+    if (!(itemList contains target) && !(customList contains target)) {
         print("Target checklist not found!", "red");
         return;
     }
-    int first = itemList[target].first;
-    int last = itemList[target].last;
-    for (int i = first; i <= last; i++) {
-        item it = to_item(i);
-        if (totalItemAmount(it) == 0) {
-            print ("X " + it + " not found", "red");
+    if (itemList contains target) {
+        int first = itemList[target].first;
+        int last = itemList[target].last;
+        if (first != -1) {
+            for (int i = first; i <= last; i++) {
+                item it = to_item(i);
+                if (totalItemAmount(it) == 0) {
+                    print ("X " + it + " not found", "red");
+                } else {
+                    print ("O " + it + " found!", "green");
+                }
+            }
         } else {
-            print ("O " + it + " found!", "green");
+            foreach itId in itemList[target].list {
+                item it = to_item(itId);
+                if (totalItemAmount(it) == 0) {
+                    print ("X " + it + " not found", "red");
+                } else {
+                    print ("O " + it + " found!", "green");
+                }
+            }
+        }
+    } else {
+        int first = customList[target].first;
+        int last = customList[target].last;
+        if (first != -1) {
+            for (int i = first; i <= last; i++) {
+                item it = to_item(i);
+                if (totalItemAmount(it) == 0) {
+                    print ("X " + it + " not found", "red");
+                } else {
+                    print ("O " + it + " found!", "green");
+                }
+            }
+        } else {
+            foreach itId in customList[target].list {
+                item it = to_item(itId);
+                if (totalItemAmount(it) == 0) {
+                    print ("X " + it + " not found", "red");
+                } else {
+                    print ("O " + it + " found!", "green");
+                }
+            }
         }
     }
 }
 
 void printHelp() {
-    print_html("<b>To use this script</b> type pChecklist and then a target checklist name. (pChecklist crimbo22)");
-    print_html("<b>Currently Supported Checklist targets</b>");
+    print_html("To use this script type pChecklist and then a target checklist name. <i>Example: pChecklist crimbo22</i>");
+    print_html("<b>generateCustomList -</b> Also supports making your custom lists but requires code editing. Instructions in the code.");
+    print_html("<font color=0000ff><b>Currently Supported Public Checklist targets</b></font>");
     listOfItems [string] itemList;
     file_to_map("data/checklistData.txt", itemList);
     foreach key in itemList {
         print(key);
     }
-}
-
-void main(string arg) {
-    string [int] commands = arg.split_string("\\s+");
-    for(int i = 0; i < commands.count(); ++i){
-        switch(commands[i]) {
-            case "help":
-                printHelp();
-                return;
-            //easy adding new item checklists if you don't know how to format the file
-            // case "test":
-            //     generateNewFile("x", 2, 3);
-            //     return;
-            default:
-                verfiyChecklist("crimbo22");
-                return;
-        }
+    print_html("<font color=0000ff><b>Your Custom Checklist targets</b></font>");
+    listOfItems [string] customList;
+    file_to_map("data/personalChecklistData.txt", customList);
+    foreach key in customList {
+        print(key);
     }
 }
