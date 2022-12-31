@@ -11,3 +11,6 @@ to see available checklist targets.
 
 To use checklist 'crimbo22' for example, type
 `pChecklist crimbo22`
+
+## Known Issues
+Does not recognize bound familiars and double counts iotms (bound and unbound versions)
