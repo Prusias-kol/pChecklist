@@ -1,3 +1,6 @@
+script "pChecklist";
+notify Coolfood;
+
 void generateNewFile(string target, int firstId, int lastId);
 void generateNewFileCustomList(string target, int[] customList);
 int totalItemAmount(item x);
