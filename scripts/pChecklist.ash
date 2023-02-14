@@ -136,8 +136,11 @@ void verfiyChecklist(string target) {
 }
 
 void printHelp() {
-    print_html("To use this script type pChecklist and then a target checklist name. <i>Example: pChecklist crimbo22</i>");
+    print_html("To use this script type pChecklist and then a target checklist name.");
+    print_html("<b>Example: pChecklist crimbo22</b>");
+    print("**********************************");
     print_html("<b>generateCustomList -</b> Also supports making your custom lists but requires code editing. Instructions in the code.");
+    print("**********************************");
     print_html("<font color=0000ff><b>Currently Supported Public Checklist targets</b></font>");
     listOfItems [string] itemList;
     file_to_map("data/checklistData.txt", itemList);
