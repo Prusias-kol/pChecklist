@@ -28,7 +28,7 @@ void main(string arg) {
                 // TO ADD A CUSTOM LIST OF ITEM IDS, uncomment below
                 // Replace targetName with your new target name (no spaces) and {1,2,3} with your list of item ids
                 // int[] temp = {1,2,3};
-                // generateNewFileCustomList("targetName", temp);
+                // generateNewFileCustomList("targetname", temp);
                 // TO ADD A CONSECUTIVE LIST OF ITEM IDS
                 // Replace targetName with your new target name (no spaces) and firstId and lastId with integers for item ids
                 // generateNewFile("targetName", firstId, lastId);
@@ -94,19 +94,23 @@ void verfiyChecklist(string target) {
         if (first != -1) {
             for (int i = first; i <= last; i++) {
                 item it = to_item(i);
-                if (totalItemAmount(it) == 0) {
-                    print ("X " + it + " not found", "red");
-                } else {
-                    print ("O " + it + " found!", "green");
+                if (it != $item[none]) {
+                    if (totalItemAmount(it) == 0) {
+                        print ("X " + it + " not found", "red");
+                    } else {
+                        print ("O " + it + " found!", "green");
+                    }
                 }
             }
         } else {
             foreach itId in itemList[target].list {
-                item it = to_item(itId);
-                if (totalItemAmount(it) == 0) {
-                    print ("X " + it + " not found", "red");
-                } else {
-                    print ("O " + it + " found!", "green");
+                item it = to_item(itemList[target].list[itId]);
+                if (it != $item[none]) {
+                    if (totalItemAmount(it) == 0) {
+                        print ("X " + it + " not found", "red");
+                    } else {
+                        print ("O " + it + " found!", "green");
+                    }
                 }
             }
         }
