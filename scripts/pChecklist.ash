@@ -6,6 +6,7 @@ void generateNewFileCustomList(string target, int[] customList);
 int totalItemAmount(item x);
 void verfiyChecklist(string target);
 void printHelp();
+void printItemStatus(item it);
 void main(string arg);
 
 record listOfItems {
@@ -92,49 +93,21 @@ void verfiyChecklist(string target) {
         int first = itemList[target].first;
         int last = itemList[target].last;
         if (first != -1) {
-            for (int i = first; i <= last; i++) {
-                item it = to_item(i);
-                if (it != $item[none]) {
-                    if (totalItemAmount(it) == 0) {
-                        print ("X " + it + " not found", "red");
-                    } else {
-                        print ("O " + it + " found!", "green");
-                    }
-                }
-            }
+            for (int i = first; i <= last; i++)
+                printItemStatus(i.to_item());
         } else {
-            foreach itId in itemList[target].list {
-                item it = to_item(itemList[target].list[itId]);
-                if (it != $item[none]) {
-                    if (totalItemAmount(it) == 0) {
-                        print ("X " + it + " not found", "red");
-                    } else {
-                        print ("O " + it + " found!", "green");
-                    }
-                }
-            }
+            foreach itId in itemList[target].list
+                printItemStatus(itemList[target].list[itId].to_item());
         }
     } else {
         int first = customList[target].first;
         int last = customList[target].last;
         if (first != -1) {
-            for (int i = first; i <= last; i++) {
-                item it = to_item(i);
-                if (totalItemAmount(it) == 0) {
-                    print ("X " + it + " not found", "red");
-                } else {
-                    print ("O " + it + " found!", "green");
-                }
-            }
+            for (int i = first; i <= last; i++)
+                printItemStatus(i.to_item());
         } else {
-            foreach itId in customList[target].list {
-                item it = to_item(itId);
-                if (totalItemAmount(it) == 0) {
-                    print ("X " + it + " not found", "red");
-                } else {
-                    print ("O " + it + " found!", "green");
-                }
-            }
+            foreach itId in customList[target].list
+                printItemStatus(itId.to_item());
         }
     }
 }
@@ -158,3 +131,13 @@ void printHelp() {
         print(key);
     }
 }
+
+void printItemStatus(item it) {
+    if (it == $item[none])
+        return;
+    if (totalItemAmount(it) == 0)
+        print_html(`<span style="color:red;">X <a href="{it.to_wiki_url()}"><u>{it}</u></a> not found</span>`);
+    else
+        print_html(`<span style="color:green;">O <a href="{it.to_wiki_url()}"><u>{it}</u></a> found!</span>`);
+}
+
